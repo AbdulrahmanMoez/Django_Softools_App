@@ -1,0 +1,62 @@
+{% load static %}
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Login</title>
+        <meta name="description" content="Login to SofTools">
+        <link rel="icon" type="image/png" href="{% static 'softools/images/login-fav.png' %}">
+        <link rel="stylesheet" href="{% static 'softools/css/auth.css' %}">
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+        <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    </head>
+    <body>
+        <header class="site-header">
+            <div class="header-container">
+                <a href="{% url 'home' %}" class="brand">
+                    <img src="{% static 'softools/images/logo.png' %}" alt="SofTools" class="brand-logo">
+                    <span class="brand-name">SofTools</span>
+                </a>
+            </div>
+        </header>
+
+        <div class="container">
+            <div class="auth-container">
+                <div class="auth-header">
+                    <h1 class="auth-title">Welcome Back</h1>
+                    <p class="auth-subtitle">Sign in to continue to Softools</p>
+                </div>
+
+                {% if messages %}
+                    {% for message in messages %}
+                        <div class="alert {% if message.tags %}alert-{{ message.tags }}{% endif %}">
+                            {{ message }}
+                        </div>
+                    {% endfor %}
+                {% endif %}
+
+                <form method="POST" class="auth-form">
+                    {% csrf_token %}
+                    <div class="form-group">
+                        <label class="form-label" for="username">Username</label>
+                        <input type="text" name="username" class="form-control" required>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label" for="password">Password</label>
+                        <input type="password" name="password" class="form-control" required>
+                    </div>
+                    <button type="submit" class="submit-button">
+                        <i class="fas fa-sign-in-alt"></i>
+                        <span>Sign In</span>
+                    </button>
+                </form>
+
+                <div class="auth-footer">
+                    <p>Don't have an account? <a href="{% url 'register' %}" class="auth-link">Create Account</a></p>
+                </div>
+            </div>
+        </div>
+        <script src="{% static 'softools/js/auth.js' %}" defer></script>
+    </body>
+</html>

@@ -1,0 +1,80 @@
+{% load static %}
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Register</title>
+        <meta name="description" content="Create a SofTools Account">
+        <link rel="icon" type="image/png" href="{% static 'softools/images/register-fav.png' %}">
+        <link rel="stylesheet" href="{% static 'softools/css/auth.css' %}">
+    </head>
+    <body>
+        <header class="site-header">
+            <div class="header-container">
+                <a href="{% url 'home' %}" class="brand">
+                    <img src="{% static 'softools/images/logo.png' %}" alt="SofTools" class="brand-logo">
+                    <span class="brand-name">SoftTools</span>
+                </a>
+            </div>
+        </header>
+
+        <div class="container">
+            <div class="auth-container">
+                <div class="auth-header">
+                    <h1 class="auth-title">Create Account</h1>
+                    <p class="auth-subtitle">Join SofTools to access all features</p>
+                </div>
+
+                <form method="POST" class="auth-form">
+                    {% csrf_token %}
+                    {% if form.errors %}
+                        <div class="alert alert-error">
+                            <ul>
+                            {% for field, errors in form.errors.items %}
+                                {% for error in errors %}
+                                    <li>{{ error }}</li>
+                                {% endfor %}
+                            {% endfor %}
+                            </ul>
+                            <button type="button" onclick="this.parentElement.style.display='none'">&times;</button>
+                        </div>
+                    {% endif %}
+                    <div class="form-group">
+                        <label class="form-label" for="username">Username</label>
+                        <input type="text" name="username" class="form-control" placeholder="Enter your username" autofocus autocomplete="username" required>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label" for="first_name">First Name</label>
+                        <input type="text" name="first_name" class="form-control" placeholder="Enter your first name" autocomplete="given-name" required>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label" for="last_name">Last Name</label>
+                        <input type="text" name="last_name" class="form-control" placeholder="Enter your last name" autocomplete="family-name" required>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label" for="email">Email</label>
+                        <input type="email" name="email" class="form-control" placeholder="Enter your email address" autocomplete="email" required>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label" for="password1">Password</label>
+                        <input type="password" name="password1" class="form-control" placeholder="Enter your password" autocomplete="new-password" required>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label" for="password2">Confirm Password</label>
+                        <input type="password" name="password2" class="form-control" placeholder="Confirm your password" autocomplete="new-password" required>
+                    </div>
+                    <button type="submit" class="submit-button">
+                        <i class="fas fa-user-plus"></i>
+                        <span>Create Account</span>
+                    </button>
+                </form>
+
+                <div class="auth-footer">
+                    <p>Already have an account? <a href="{% url 'login' %}" class="auth-link">Sign In</a></p>
+                </div>
+            </div>
+        </div>
+        <script src="{% static 'softools/js/auth.js' %}" defer></script>
+    </body>
+</html>

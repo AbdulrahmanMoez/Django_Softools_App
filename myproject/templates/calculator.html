@@ -1,0 +1,1727 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Scientific Calculator | SofTools</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{% static 'softools/css/home.css' %}">
+    <style>
+        :root {
+            --primary-color: #6366f1;
+            --primary-hover: #4f46e5;
+            --secondary-color: #64748b;
+            --secondary-hover: #475569;
+            --accent-color: #10b981;
+            --accent-hover: #059669;
+            --dark-background: #0f172a;
+            --dark-surface: #1e293b;
+            --light-background: #f8fafc;
+            --light-surface: #e2e8f0;
+            --text-dark: #1e293b;
+            --text-light: #f8fafc;
+            --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -2px rgba(0, 0, 0, 0.1);
+            --transition: all 0.3s ease;
+            --border-radius: 0.75rem;
+            --glass-effect: rgba(255, 255, 255, 0.05);
+            --border-color: #334155;
+            --gradient-primary: linear-gradient(135deg, #6366f1, #4f46e5);
+            --gradient-secondary: linear-gradient(135deg, #64748b, #475569);
+            --gradient-accent: linear-gradient(135deg, #10b981, #059669);
+            --modern-font: 'Inter', system-ui, -apple-system, sans-serif;
+            --modern-font-alt: 'Poppins', sans-serif;
+        }
+
+        body {
+            font-family: var(--modern-font);
+            margin: 0;
+            padding: 0;
+            background: var(--dark-background);
+            color: var(--text-light);
+            transition: var(--transition);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+
+        body.light-mode {
+            background: var(--light-background);
+            color: var(--text-dark);
+        }
+
+        .calculator {
+            width: 100%;
+            max-width: 480px;
+            background: var(--dark-surface);
+            border-radius: var(--border-radius);
+            box-shadow: var(--shadow);
+            padding: 1.75rem;
+            margin: 2rem auto;
+            transition: var(--transition);
+            border: 1px solid var(--border-color);
+            position: relative;
+            overflow: hidden;
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.25);
+        }
+        
+        .light-mode .calculator {
+            background: var(--light-surface);
+            border-color: rgba(0, 0, 0, 0.1);
+        }
+
+        .calculator::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 5px;
+            background: var(--gradient-primary);
+        }
+
+        .calculator-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid var(--border-color);
+            position: relative;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            margin-bottom: 2rem;
+            padding-bottom: 1.25rem;
+        }
+
+        .calculator-brand {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            position: relative;
+            padding: 0.5rem;
+            border-radius: 10px;
+            transition: var(--transition);
+            z-index: 5;
+            transition: all 0.3s ease;
+        }
+
+        .calculator-brand:hover {
+            transform: translateY(-2px);
+        }
+
+        .logo-container {
+            width: 40px;
+            height: 40px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            border-radius: 10px;
+            background: var(--gradient-primary);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            position: relative;
+            overflow: hidden;
+            z-index: 1;
+        }
+
+        .logo-container::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.2), transparent);
+            z-index: -1;
+        }
+
+        .calculator-icon {
+            font-size: 1.5rem;
+            color: white;
+            filter: drop-shadow(0 2px 2px rgba(0, 0, 0, 0.3));
+        }
+
+        .logo-text {
+            font-family: var(--modern-font-alt);
+            font-weight: 700;
+            font-size: 1.5rem;
+            letter-spacing: -0.5px;
+            background: var(--gradient-primary);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            text-shadow: 0 2px 10px rgba(99, 102, 241, 0.3);
+        }
+
+        .logo-text span {
+            background: var(--gradient-accent);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .calculator-controls {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            z-index: 5;
+        }
+
+        .control-button {
+            width: 40px;
+            height: 40px;
+            border-radius: 10px;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            color: var(--text-light);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            cursor: pointer;
+            transition: var(--transition);
+            position: relative;
+            overflow: hidden;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease;
+        }
+
+        .control-button:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+            background: rgba(255, 255, 255, 0.1);
+        }
+
+        .control-button:active {
+            transform: translateY(1px);
+            box-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
+        }
+
+        .control-button.active {
+            background: var(--gradient-primary);
+            color: white;
+        }
+
+        .light-mode .control-button {
+            background: rgba(0, 0, 0, 0.05);
+            border-color: rgba(0, 0, 0, 0.1);
+            color: var(--text-dark);
+        }
+
+        .mode-toggle {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            height: 36px;
+            padding: 0 15px;
+            border-radius: 18px;
+            border: none;
+            background: var(--glass-effect);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            color: var(--text-light);
+            cursor: pointer;
+            transition: var(--transition);
+            font-weight: 600;
+            font-size: 0.8rem;
+            letter-spacing: 0.3px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            position: relative;
+            overflow: hidden;
+            min-width: 130px;
+        }
+        
+        .mode-toggle::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.1), transparent);
+            opacity: 0;
+            transition: var(--transition);
+        }
+        
+        .mode-toggle:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        }
+        
+        .mode-toggle:hover::before {
+            opacity: 1;
+        }
+        
+        .mode-toggle:active {
+            transform: translateY(1px);
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+        
+        .scientific-mode .mode-toggle {
+            background: linear-gradient(135deg, var(--primary-color), var(--primary-color-dark));
+            border-color: var(--primary-color);
+            color: white;
+        }
+        
+        .basic-mode .mode-toggle {
+            background: var(--glass-effect);
+            border-color: rgba(255, 255, 255, 0.1);
+        }
+
+        .mode-toggle .button-text {
+            position: relative;
+            z-index: 2;
+            font-size: 0.85rem;
+        }
+
+        .display {
+            background: rgba(15, 23, 42, 0.7);
+            border-radius: 14px;
+            padding: 1.25rem;
+            margin-bottom: 1.25rem;
+            min-height: 80px;
+            overflow: hidden;
+            position: relative;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            box-shadow: inset 0 2px 10px rgba(0, 0, 0, 0.3), 
+                        0 8px 16px -8px rgba(0, 0, 0, 0.25);
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-end;
+            align-items: flex-end;
+        }
+
+        .light-mode .display {
+            background: rgba(0, 0, 0, 0.05);
+            border-color: rgba(0, 0, 0, 0.05);
+        }
+
+        .expression {
+            font-size: 0.95rem;
+            color: var(--secondary-color);
+            margin-bottom: 0.5rem;
+            word-break: break-all;
+            opacity: 0.9;
+            max-height: 3em;
+            overflow-y: auto;
+            width: 100%;
+            text-align: right;
+        }
+
+        .result {
+            font-size: 2.25rem;
+            font-weight: 600;
+            min-height: 2.5rem;
+            word-break: break-all;
+            line-height: 1.2;
+            color: var(--text-light);
+            transition: var(--transition);
+            text-shadow: 0 2px 10px rgba(99, 102, 241, 0.25);
+            letter-spacing: 0.02em;
+            width: 100%;
+            text-align: right;
+        }
+
+        .light-mode .result {
+            color: var(--text-dark);
+            text-shadow: none;
+        }
+
+        .memory-buttons {
+            display: flex;
+            gap: 0.75rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .memory {
+            flex: 1;
+            padding: 0.75rem;
+            font-size: 1rem;
+            border: none;
+            border-radius: var(--border-radius);
+            background: var(--gradient-secondary);
+            color: white;
+            cursor: pointer;
+            transition: var(--transition);
+            font-family: var(--modern-font);
+            font-weight: 500;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            position: relative;
+            overflow: hidden;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .memory:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        }
+
+        .memory:active {
+            transform: translateY(1px);
+            box-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
+        }
+
+        .memory i {
+            font-size: 1.1rem;
+        }
+
+        .scientific-buttons {
+            display: none;
+            grid-template-columns: repeat(5, 1fr);
+            gap: 12px;
+            margin-bottom: 1.2rem;
+            opacity: 0;
+            transform: translateY(-20px);
+            transition: opacity 0.3s ease, transform 0.3s ease;
+            max-height: 240px;
+            overflow-y: auto;
+            padding-right: 8px;
+            scrollbar-width: thin;
+            scrollbar-color: var(--primary-color) transparent;
+        }
+
+        .scientific-mode .scientific-buttons {
+            display: grid;
+            opacity: 1;
+            transform: translateY(0);
+            height: auto;
+            margin-bottom: 1rem;
+        }
+
+        .keypad {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 12px;
+            margin-top: 1.2rem;
+        }
+
+        .keypad button {
+            padding: 0.85rem;
+            aspect-ratio: 1;
+            font-size: 1.25rem;
+            border: none;
+            border-radius: 12px;
+            background: rgba(255, 255, 255, 0.05);
+            color: var(--text-light);
+            cursor: pointer;
+            transition: var(--transition);
+            font-family: var(--modern-font);
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            position: relative;
+            overflow: hidden;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            transition: all 0.3s ease;
+        }
+
+        .keypad .equals {
+            grid-column: span 2;
+            aspect-ratio: auto;
+            background: linear-gradient(135deg, var(--primary-color), var(--primary-color-dark));
+            color: white;
+            font-weight: 600;
+            border-color: var(--primary-color);
+            box-shadow: 0 4px 8px rgba(var(--primary-color-rgb), 0.3);
+        }
+        
+        .keypad .equals:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 12px rgba(var(--primary-color-rgb), 0.4);
+            background: linear-gradient(135deg, var(--primary-color-light), var(--primary-color));
+        }
+        
+        .keypad .equals:active {
+            transform: translateY(1px);
+            box-shadow: 0 2px 4px rgba(var(--primary-color-rgb), 0.3);
+        }
+
+        .light-mode .keypad button {
+            background: rgba(0, 0, 0, 0.05);
+            color: var(--text-dark);
+            border-color: rgba(0, 0, 0, 0.05);
+        }
+
+        .keypad button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+            background: rgba(255, 255, 255, 0.1);
+        }
+
+        .keypad button:active {
+            transform: translateY(1px);
+            box-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
+        }
+
+        .keypad .operator {
+            background: var(--gradient-secondary);
+            color: white;
+            border: none;
+        }
+
+        .light-mode .keypad .operator {
+            background: var(--gradient-secondary);
+            color: white;
+        }
+
+        /* Function buttons specific styles */
+        .function {
+            padding: 0.65rem 0.4rem !important;
+            font-size: 0.9rem !important;
+            background: rgba(255, 255, 255, 0.03) !important;
+            color: #e0e0e0;
+            border: 1px solid rgba(255, 255, 255, 0.03);
+            aspect-ratio: 1.2;
+        }
+        
+        /* Function button hover effect */
+        .function:hover {
+            background: rgba(255, 255, 255, 0.08) !important;
+            transform: translateY(-2px);
+        }
+
+        .history-panel {
+            position: fixed;
+            top: 0;
+            right: -350px;
+            width: 350px;
+            height: 100%;
+            background: var(--dark-surface);
+            border-left: 1px solid var(--border-color);
+            transition: right 0.3s ease;
+            z-index: 100;
+            padding: 1.5rem;
+            box-shadow: -4px 0 15px rgba(0, 0, 0, 0.2);
+            overflow-y: auto;
+        }
+
+        .light-mode .history-panel {
+            background: var(--light-surface);
+            border-color: rgba(0, 0, 0, 0.1);
+        }
+
+        .history-panel.show {
+            right: 0;
+        }
+
+        .history-panel h3 {
+            font-family: var(--modern-font-alt);
+            font-weight: 600;
+            margin-top: 0;
+            margin-bottom: 1.5rem;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid var(--border-color);
+            background: var(--gradient-primary);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        #historyList {
+            flex: 1;
+            overflow-y: auto;
+            padding-right: 0.5rem;
+            scrollbar-width: thin;
+            scrollbar-color: var(--primary-color) transparent;
+        }
+
+        #historyList::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        #historyList::-webkit-scrollbar-track {
+            background: transparent;
+        }
+
+        #historyList::-webkit-scrollbar-thumb {
+            background-color: var(--primary-color);
+            border-radius: 20px;
+        }
+
+        .history-item {
+            padding: 1rem;
+            margin-bottom: 1rem;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: var(--border-radius);
+            cursor: pointer;
+            transition: var(--transition);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        .history-item::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 4px;
+            height: 100%;
+            background: var(--gradient-primary);
+            opacity: 0;
+            transition: var(--transition);
+        }
+
+        .history-item:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .history-item:hover::before {
+            opacity: 1;
+        }
+
+        .light-mode .history-item {
+            background: rgba(0, 0, 0, 0.05);
+            border-color: rgba(0, 0, 0, 0.05);
+        }
+
+        .history-expression {
+            font-size: 0.9rem;
+            color: var(--secondary-color);
+            margin-bottom: 0.5rem;
+            word-break: break-all;
+        }
+
+        .history-result {
+            font-size: 1.1rem;
+            font-weight: 600;
+            word-break: break-all;
+        }
+
+        .notification {
+            position: fixed;
+            bottom: 2rem;
+            left: 50%;
+            transform: translateX(-50%);
+            padding: 1rem 1.5rem;
+            border-radius: var(--border-radius);
+            background: var(--gradient-accent);
+            color: white;
+            font-family: var(--modern-font);
+            font-weight: 500;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+            opacity: 0;
+            transition: opacity 0.3s ease, transform 0.3s ease;
+            z-index: 1000;
+            pointer-events: none;
+            max-width: 90%;
+            text-align: center;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 30px;
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.25);
+            font-weight: 500;
+            letter-spacing: 0.5px;
+            transition: all 0.3s cubic-bezier(0.68, -0.55, 0.27, 1.55);
+        }
+
+        .notification.show {
+            opacity: 1;
+            transform: translateX(-50%) translateY(0);
+        }
+
+        .notification.error {
+            background: linear-gradient(135deg, #ef4444, #b91c1c);
+        }
+
+        .help-dialog {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            backdrop-filter: blur(5px);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.3s ease, visibility 0.3s ease;
+        }
+
+        .help-dialog.show {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .help-content {
+            background: var(--dark-surface);
+            border-radius: var(--border-radius);
+            width: 90%;
+            max-width: 600px;
+            max-height: 80vh;
+            overflow-y: auto;
+            padding: 2rem;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+            border: 1px solid var(--border-color);
+            position: relative;
+        }
+
+        .light-mode .help-content {
+            background: var(--light-surface);
+            border-color: rgba(0, 0, 0, 0.1);
+        }
+
+        .help-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .help-header h2 {
+            font-family: var(--modern-font-alt);
+            font-weight: 600;
+            margin: 0;
+            background: var(--gradient-primary);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .close-help {
+            background: none;
+            border: none;
+            color: var(--text-light);
+            font-size: 1.5rem;
+            cursor: pointer;
+            transition: var(--transition);
+            width: 40px;
+            height: 40px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            border-radius: 50%;
+        }
+
+        .close-help:hover {
+            background: rgba(255, 255, 255, 0.1);
+            transform: rotate(90deg);
+        }
+
+        .light-mode .close-help {
+            color: var(--text-dark);
+        }
+
+        .light-mode .close-help:hover {
+            background: rgba(0, 0, 0, 0.1);
+        }
+
+        .shortcut-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 2rem;
+        }
+
+        .shortcut-category h3 {
+            font-family: var(--modern-font-alt);
+            font-weight: 600;
+            margin-top: 0;
+            margin-bottom: 1rem;
+            color: var(--accent-color);
+        }
+
+        .shortcut-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 0.75rem;
+        }
+
+        .shortcut-keys {
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        .key {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 0.25rem 0.5rem;
+            border-radius: 4px;
+            font-family: monospace;
+            font-size: 0.9rem;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .light-mode .key {
+            background: rgba(0, 0, 0, 0.05);
+            border-color: rgba(0, 0, 0, 0.1);
+        }
+
+        /* Mode indicator styling */
+        .mode-indicator-wrapper {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto;
+            position: absolute;
+            left: 50%;
+            transform: translateX(-50%);
+        }
+        
+        .mode-indicator-label {
+            background: rgba(255, 255, 255, 0.08);
+            border-radius: 20px;
+            padding: 4px 12px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            color: var(--text-light);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .mode-indicator-label::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(to bottom, rgba(255, 255, 255, 0.1), transparent);
+            opacity: 0.5;
+        }
+        
+        .scientific-mode .mode-indicator-label {
+            background: linear-gradient(135deg, var(--primary-color), var(--primary-color-dark));
+            color: white;
+        }
+        
+        .basic-mode .mode-indicator-label {
+            background: linear-gradient(135deg, var(--secondary-color), var(--secondary-color-dark));
+            color: white;
+        }
+        
+        .mode-text {
+            position: relative;
+            z-index: 1;
+        }
+        
+        /* Add a subtle animation when switching modes */
+        .calculator.mode-transition {
+            transform: scale(0.98);
+            opacity: 0.9;
+            transition: all 0.4s cubic-bezier(0.165, 0.84, 0.44, 1);
+        }
+
+        /* Initial load animation */
+        @keyframes calculatorFadeIn {
+            0% {
+                opacity: 0;
+                transform: translateY(20px) scale(0.98);
+            }
+            100% {
+                opacity: 1;
+                transform: translateY(0) scale(1);
+            }
+        }
+        
+        .calculator {
+            animation: calculatorFadeIn 0.5s ease-out forwards;
+        }
+
+        @media (max-width: 480px) {
+            .calculator {
+                margin: 1rem;
+                padding: 1rem;
+            }
+
+            button {
+                padding: 0.75rem;
+                font-size: 1rem;
+            }
+        }
+
+        /* Additional professional styling */
+        .calculator {
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.25), 0 2px 10px rgba(0, 0, 0, 0.2);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+        }
+        
+        .light-mode .calculator {
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1), 0 2px 10px rgba(0, 0, 0, 0.05);
+        }
+        
+        /* Improved button hover effects */
+        .keypad button:hover, .function:hover, .control-button:hover {
+            background-image: linear-gradient(rgba(255, 255, 255, 0.1), rgba(255, 255, 255, 0.05));
+            transform: translateY(-3px);
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+        }
+        
+        /* Add a subtle glow to the active buttons */
+        .control-button.active {
+            box-shadow: 0 0 15px rgba(var(--primary-color-rgb), 0.5);
+        }
+        
+        /* Improve the notification styling */
+        .notification {
+            border-radius: 30px;
+            font-weight: 500;
+            letter-spacing: 0.3px;
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.15);
+        }
+
+        /* Calculator mode size adjustments */
+        .basic-mode {
+            max-width: 380px;
+            transition: max-width 0.3s ease-in-out;
+            background: linear-gradient(to bottom, #111827, #1e293b);
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+        }
+        
+        /* Scientific mode landscape layout */
+        .scientific-mode {
+            max-width: 720px !important;
+            transition: max-width 0.4s ease-in-out, padding 0.4s ease-in-out;
+            padding: 1.5rem !important;
+            display: grid !important;
+            grid-template-columns: 1fr !important;
+            grid-template-rows: auto auto 1fr !important;
+            grid-template-areas:
+                "header"
+                "display"
+                "buttons" !important;
+            background: linear-gradient(to bottom right, #111827, #0f172a) !important;
+        }
+        
+        .scientific-mode .header {
+            grid-area: header !important;
+            margin-bottom: 0.8rem;
+        }
+        
+        .scientific-mode .display {
+            grid-area: display !important;
+            min-height: 80px;
+            padding: 1rem;
+            margin-bottom: 1rem;
+            font-size: 1.8rem;
+            background: rgba(30, 41, 59, 0.7);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -4px rgba(0, 0, 0, 0.1);
+        }
+        
+        .scientific-mode .buttons-container {
+            grid-area: buttons !important;
+            display: grid !important;
+            grid-template-columns: 1.2fr 0.8fr !important;
+            gap: 1.5rem !important;
+            align-items: start !important;
+        }
+        
+        .scientific-mode .scientific-buttons {
+            display: grid !important;
+            grid-template-columns: repeat(5, 1fr) !important;
+            gap: 10px !important;
+            padding: 0 !important;
+            margin: 0 !important;
+            max-height: none;
+            overflow-y: visible;
+            align-items: stretch !important;
+        }
+        
+        .scientific-mode .keypad {
+            display: grid !important;
+            grid-template-columns: repeat(4, 1fr) !important;
+            gap: 12px !important;
+            padding: 0 !important;
+            margin: 0 !important;
+        }
+        
+        .scientific-mode .keypad button,
+        .scientific-mode .function {
+            padding: 0.7rem !important;
+            font-size: 1rem !important;
+            border-radius: 14px !important;
+            min-height: 42px !important;
+            aspect-ratio: 1.2 !important;
+        }
+        
+        .scientific-mode .keypad button {
+            background: linear-gradient(135deg, #252f3f, #1e293b) !important;
+            color: #f8fafc !important;
+            border: 1px solid rgba(255, 255, 255, 0.1) !important;
+        }
+        
+        /* Regular keypad styling in basic mode remains the same */
+        .basic-mode .keypad {
+            gap: 12px;
+            margin-top: 1.2rem;
+        }
+
+        /* Enhanced button styles */
+        .keypad button,
+        .scientific-buttons button {
+            border-radius: 14px;
+            transition: all 0.2s ease;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+        }
+        
+        .keypad button:hover,
+        .scientific-buttons button:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2);
+        }
+        
+        .keypad button:active,
+        .scientific-buttons button:active {
+            transform: translateY(1px);
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+        
+        /* Enhanced operator button styles */
+        .operator {
+            background: linear-gradient(135deg, #4a5568, #2d3748) !important;
+            color: #edf2f7 !important;
+            font-weight: 600;
+        }
+        
+        .function {
+            background: linear-gradient(135deg, #2d3748, #1a202c) !important;
+            color: #edf2f7 !important;
+            font-weight: 500;
+            border: 1px solid rgba(255, 255, 255, 0.1) !important;
+        }
+        
+        .function:hover {
+            background: linear-gradient(135deg, #374151, #1f2937) !important;
+            transform: translateY(-3px);
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2);
+        }
+        
+        /* Redesigned equals button */
+        .keypad .equals {
+            grid-column: span 2;
+            background: linear-gradient(135deg, var(--secondary-color), var(--secondary-color-dark)) !important;
+            color: white;
+            font-weight: 700;
+            font-size: 1.5rem !important;
+            padding: 0.7rem !important;
+            box-shadow: 0 4px 10px rgba(168, 85, 247, 0.4);
+            border: none;
+        }
+        
+        .keypad .equals:hover {
+            transform: translateY(-3px) scale(1.02);
+            box-shadow: 0 6px 15px rgba(168, 85, 247, 0.5);
+        }
+        
+        .keypad .equals:active {
+            transform: translateY(1px);
+            box-shadow: 0 2px 5px rgba(168, 85, 247, 0.4);
+        }
+        
+        /* Basic mode appearance */
+        
+        /* Enhance the equals button in scientific mode */
+        .scientific-mode .keypad .equals {
+            grid-column: span 4 !important;
+            background: linear-gradient(135deg, #8b5cf6, #7c3aed) !important;
+            color: white !important;
+            font-size: 1.6rem !important;
+            font-weight: 700 !important;
+            padding: 0.8rem !important;
+            box-shadow: 0 8px 15px rgba(124, 58, 237, 0.3) !important;
+            border: none !important;
+            transition: all 0.3s ease !important;
+        }
+        
+        .scientific-mode .keypad .equals:hover {
+            transform: translateY(-3px) !important;
+            box-shadow: 0 12px 20px rgba(124, 58, 237, 0.4) !important;
+        }
+        
+        .scientific-mode .keypad .equals:active {
+            transform: translateY(1px) !important;
+            box-shadow: 0 4px 10px rgba(124, 58, 237, 0.3) !important;
+        }
+        
+        /* Number buttons in scientific mode */
+        .scientific-mode .keypad button:not(.operator):not(.equals) {
+            background: linear-gradient(135deg, #1e293b, #0f172a) !important;
+            color: #f1f5f9 !important;
+        }
+
+        /* Make memory buttons match the theme */
+        .memory {
+            background: linear-gradient(135deg, #374151, #1f2937) !important;
+            color: #d1d5db !important;
+            border-radius: 10px !important;
+            border: 1px solid rgba(255, 255, 255, 0.08) !important;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -2px rgba(0, 0, 0, 0.1) !important;
+        }
+        
+        .memory:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 8px rgba(0, 0, 0, 0.15) !important;
+            background: linear-gradient(135deg, #4b5563, #374151) !important;
+        }
+
+        /* Professional button alignment and consistent sizing */
+        .keypad button,
+        .scientific-buttons button,
+        .memory-buttons button {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-width: 44px;
+            text-align: center;
+            line-height: 1.2;
+            height: 100%;
+            width: 100%;
+            transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        
+        /* Make scientific buttons grid more consistent */
+        .scientific-mode .buttons-container {
+            grid-area: buttons !important;
+            display: grid !important;
+            grid-template-columns: 1.2fr 0.8fr !important;
+            gap: 1.5rem !important;
+            align-items: start !important;
+        }
+        
+        /* Ensure consistent height and spacing */
+        .scientific-mode .scientific-buttons {
+            display: grid !important;
+            grid-template-columns: repeat(5, 1fr) !important;
+            gap: 10px !important;
+            padding: 0 !important;
+            margin: 0 !important;
+            max-height: none;
+            overflow-y: visible;
+            align-items: stretch !important;
+        }
+        
+        .scientific-mode .keypad {
+            display: grid !important;
+            grid-template-columns: repeat(4, 1fr) !important;
+            gap: 10px !important;
+            padding: 0 !important;
+            margin: 0 !important;
+            align-items: stretch !important;
+            align-content: start !important;
+        }
+        
+        /* Create more consistent button appearances */
+        .scientific-mode .keypad button,
+        .scientific-mode .function {
+            padding: 0.8rem !important;
+            font-size: 1rem !important;
+            border-radius: 12px !important;
+            aspect-ratio: auto !important;
+            height: auto !important;
+            min-height: 46px !important;
+            margin: 0 !important;
+            font-weight: 500 !important;
+            letter-spacing: 0.02em !important;
+        }
+        
+        /* Align button text */
+        .scientific-mode button {
+            display: flex !important;
+            align-items: center !important;
+            justify-content: center !important;
+        }
+        
+        /* Professional organization of memory buttons */
+        .memory-buttons {
+            display: grid !important;
+            grid-template-columns: repeat(4, 1fr) !important;
+            gap: 10px !important;
+            margin-bottom: 1rem !important;
+        }
+        
+        .memory {
+            padding: 0.7rem !important;
+            aspect-ratio: 1.2 !important;
+            border-radius: 12px !important;
+        }
+    </style>
+</head>
+<body>
+    <div class="calculator basic-mode" id="calculator">
+        <div class="calculator-header">
+            <div class="calculator-brand">
+                <div class="logo-container">
+                    <i class="fas fa-calculator calculator-icon"></i>
+                </div>
+                <div class="logo-text">Sof<span>Cal</span></div>
+            </div>
+            
+            <div class="calculator-controls">
+                <button class="control-button" id="helpButton" onclick="toggleHelp()" title="Help">
+                    <i class="fas fa-question-circle"></i>
+                </button>
+                <button class="control-button" id="toggleHistory" onclick="toggleHistory()" title="Toggle History">
+                    <i class="fas fa-history"></i>
+                </button>
+                <button class="mode-toggle" id="toggleScientific" onclick="toggleScientificMode()" title="Switch to Scientific Mode">
+                    <span class="button-text">Scientific</span>
+                </button>
+            </div>
+        </div>
+
+        <div class="display">
+            <div class="expression" id="expression"></div>
+            <div class="result" id="result">0</div>
+        </div>
+
+        <div class="memory-buttons">
+            <button class="memory" onclick="memoryStore()" title="Memory Store">
+                <i class="fas fa-save"></i>
+            </button>
+            <button class="memory" onclick="memoryRecall()" title="Memory Recall">
+                <i class="fas fa-undo"></i>
+            </button>
+            <button class="memory" onclick="memoryAdd()" title="Memory Add">
+                <i class="fas fa-plus"></i>
+            </button>
+            <button class="memory" onclick="memoryClear()" title="Memory Clear">
+                <i class="fas fa-trash"></i>
+            </button>
+        </div>
+
+        <div class="buttons-container">
+            <div class="scientific-buttons">
+                <button class="function" onclick="appendValue('sin(')" title="Sine">sin</button>
+                <button class="function" onclick="appendValue('cos(')" title="Cosine">cos</button>
+                <button class="function" onclick="appendValue('tan(')" title="Tangent">tan</button>
+                <button class="function" onclick="appendValue('asin(')" title="Arc Sine">asin</button>
+                <button class="function" onclick="appendValue('acos(')" title="Arc Cosine">acos</button>
+                
+                <button class="function" onclick="appendValue('atan(')" title="Arc Tangent">atan</button>
+                <button class="function" onclick="appendValue('log(')" title="Logarithm (base 10)">log</button>
+                <button class="function" onclick="appendValue('ln(')" title="Natural Logarithm">ln</button>
+                <button class="function" onclick="appendValue('10^')" title="Power of 10">10^x</button>
+                <button class="function" onclick="appendValue('e^')" title="Exponential">e^x</button>
+                
+                <button class="function" onclick="appendValue('sqrt(')" title="Square Root">√</button>
+                <button class="function" onclick="appendValue('cbrt(')" title="Cube Root">∛</button>
+                <button class="function" onclick="appendValue('^2')" title="Square">x²</button>
+                <button class="function" onclick="appendValue('^3')" title="Cube">x³</button>
+                <button class="function" onclick="appendValue('^')" title="Power">x^y</button>
+                
+                <button class="function" onclick="appendValue('1/')" title="Reciprocal">1/x</button>
+                <button class="function" onclick="appendValue('π')" title="Pi (3.14159...)">π</button>
+                <button class="function" onclick="appendValue('e')" title="Euler's Number (2.71828...)">e</button>
+                <button class="function" onclick="appendValue('factorial(')" title="Factorial">x!</button>
+                <button class="function" onclick="appendValue('abs(')" title="Absolute Value">|x|</button>
+                
+                <button class="function" onclick="appendValue('rand()')" title="Random Number (0-1)">rand</button>
+                <button class="function" onclick="appendValue('floor(')" title="Floor Function">⌊x⌋</button>
+                <button class="function" onclick="appendValue('ceil(')" title="Ceiling Function">⌈x⌉</button>
+                <button class="function" onclick="appendValue('(')" title="Left Parenthesis">(</button>
+                <button class="function" onclick="appendValue(')')" title="Right Parenthesis">)</button>
+            </div>
+
+            <div class="keypad">
+                <button onclick="appendValue('7')">7</button>
+                <button onclick="appendValue('8')">8</button>
+                <button onclick="appendValue('9')">9</button>
+                <button class="operator" onclick="appendValue('÷')">÷</button>
+
+                <button onclick="appendValue('4')">4</button>
+                <button onclick="appendValue('5')">5</button>
+                <button onclick="appendValue('6')">6</button>
+                <button class="operator" onclick="appendValue('×')">×</button>
+
+                <button onclick="appendValue('1')">1</button>
+                <button onclick="appendValue('2')">2</button>
+                <button onclick="appendValue('3')">3</button>
+                <button class="operator" onclick="appendValue('-')">-</button>
+
+                <button onclick="appendValue('0')">0</button>
+                <button onclick="appendValue('.')">.</button>
+                <button class="operator" onclick="appendValue('+')">+</button>
+
+                <button onclick="clearDisplay()">C</button>
+                <button onclick="backspace()">⌫</button>
+                <button class="operator" onclick="appendValue('%')">%</button>
+                
+                <button class="equals" onclick="calculate()">=</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="history-panel" id="historyPanel">
+        <h3>History</h3>
+        <div id="historyList"></div>
+    </div>
+
+    <div class="notification" id="notification"></div>
+
+    <div class="help-dialog" id="helpDialog">
+        <div class="help-content">
+            <div class="help-header">
+                <h2>Keyboard Shortcuts</h2>
+                <button class="close-help" onclick="toggleHelp()">×</button>
+            </div>
+            <div class="shortcut-grid">
+                <div class="shortcut-category">
+                    <h3>Basic Operations</h3>
+                    <div class="shortcut-item">
+                        <span>Calculate</span>
+                        <div class="shortcut-keys">
+                            <span class="key">Enter</span>
+                        </div>
+                    </div>
+                    <div class="shortcut-item">
+                        <span>Clear</span>
+                        <div class="shortcut-keys">
+                            <span class="key">Esc</span>
+                        </div>
+                    </div>
+                    <div class="shortcut-item">
+                        <span>Backspace</span>
+                        <div class="shortcut-keys">
+                            <span class="key">Backspace</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="shortcut-category">
+                    <h3>Scientific Functions</h3>
+                    <div class="shortcut-item">
+                        <span>Sine</span>
+                        <div class="shortcut-keys">
+                            <span class="key">Ctrl</span>
+                            <span class="key">S</span>
+                        </div>
+                    </div>
+                    <div class="shortcut-item">
+                        <span>Cosine</span>
+                        <div class="shortcut-keys">
+                            <span class="key">Ctrl</span>
+                            <span class="key">C</span>
+                        </div>
+                    </div>
+                    <div class="shortcut-item">
+                        <span>Tangent</span>
+                        <div class="shortcut-keys">
+                            <span class="key">Ctrl</span>
+                            <span class="key">T</span>
+                        </div>
+                    </div>
+                    <div class="shortcut-item">
+                        <span>Logarithm</span>
+                        <div class="shortcut-keys">
+                            <span class="key">Ctrl</span>
+                            <span class="key">L</span>
+                        </div>
+                    </div>
+                    <div class="shortcut-item">
+                        <span>Natural Log</span>
+                        <div class="shortcut-keys">
+                            <span class="key">Ctrl</span>
+                            <span class="key">N</span>
+                        </div>
+                    </div>
+                    <div class="shortcut-item">
+                        <span>Square Root</span>
+                        <div class="shortcut-keys">
+                            <span class="key">Ctrl</span>
+                            <span class="key">R</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="shortcut-category">
+                    <h3>Interface Controls</h3>
+                    <div class="shortcut-item">
+                        <span>Toggle Scientific Mode</span>
+                        <div class="shortcut-keys">
+                            <span class="key">Ctrl</span>
+                            <span class="key">F</span>
+                        </div>
+                    </div>
+                    <div class="shortcut-item">
+                        <span>Toggle History</span>
+                        <div class="shortcut-keys">
+                            <span class="key">Ctrl</span>
+                            <span class="key">H</span>
+                        </div>
+                    </div>
+                    <div class="shortcut-item">
+                        <span>Toggle Theme</span>
+                        <div class="shortcut-keys">
+                            <span class="key">Ctrl</span>
+                            <span class="key">D</span>
+                        </div>
+                    </div>
+                    <div class="shortcut-item">
+                        <span>Show Help</span>
+                        <div class="shortcut-keys">
+                            <span class="key">?</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let memory = 0;
+        let history = [];
+
+        function appendValue(value) {
+            const expressionDiv = document.getElementById('expression');
+            expressionDiv.textContent += value;
+        }
+
+        function clearDisplay() {
+            document.getElementById('expression').textContent = '';
+            document.getElementById('result').textContent = '0';
+        }
+
+        function backspace() {
+            const expressionDiv = document.getElementById('expression');
+            expressionDiv.textContent = expressionDiv.textContent.slice(0, -1);
+        }
+
+        function calculate() {
+            const expression = document.getElementById('expression').textContent;
+            if (!expression.trim()) {
+                return;
+            }
+            
+            try {
+                let processedExpr = expression
+                    .replace(/×/g, '*')
+                    .replace(/÷/g, '/')
+                    .replace(/π/g, 'Math.PI')
+                    .replace(/e/g, 'Math.E')
+                    .replace(/sin\(/g, 'Math.sin(')
+                    .replace(/cos\(/g, 'Math.cos(')
+                    .replace(/tan\(/g, 'Math.tan(')
+                    .replace(/asin\(/g, 'Math.asin(')
+                    .replace(/acos\(/g, 'Math.acos(')
+                    .replace(/atan\(/g, 'Math.atan(')
+                    .replace(/log\(/g, 'Math.log10(')
+                    .replace(/ln\(/g, 'Math.log(')
+                    .replace(/sqrt\(/g, 'Math.sqrt(')
+                    .replace(/cbrt\(/g, 'Math.cbrt(')
+                    .replace(/abs\(/g, 'Math.abs(')
+                    .replace(/floor\(/g, 'Math.floor(')
+                    .replace(/ceil\(/g, 'Math.ceil(')
+                    .replace(/10\^/g, '10**')
+                    .replace(/e\^/g, 'Math.exp(')
+                    .replace(/\^/g, '**')
+                    .replace(/%/g, '/100');
+
+                // Handle special functions that aren't directly available in Math
+                processedExpr = processedExpr.replace(/rand\(\)/g, 'Math.random()');
+                
+                const result = eval(processedExpr);
+                
+                // Format the result
+                let formattedResult;
+                if (Number.isInteger(result)) {
+                    formattedResult = result;
+                } else if (typeof result === 'number') {
+                    // Limit decimal places for readability but keep precision
+                    const precision = result.toString().includes('e') ? result.toString() : 
+                                      Math.abs(result) < 0.0001 ? result.toExponential(4) : 
+                                      result.toFixed(8).replace(/\.?0+$/, '');
+                    formattedResult = precision;
+                } else {
+                    formattedResult = result;
+                }
+                
+                document.getElementById('result').textContent = formattedResult;
+                addToHistory(expression, formattedResult);
+                showNotification('Calculation completed');
+            } catch (error) {
+                console.error('Calculation error:', error);
+                document.getElementById('result').textContent = 'Error';
+                showNotification('Invalid expression', 'error');
+            }
+        }
+
+        // Helper function for factorial
+        function factorial(n) {
+            if (n < 0) return NaN;
+            if (n === 0 || n === 1) return 1;
+            let result = 1;
+            for (let i = 2; i <= n; i++) {
+                result *= i;
+                // Prevent infinite loops for large numbers
+                if (!isFinite(result)) break;
+            }
+            return result;
+        }
+
+        function memoryStore() {
+            const result = parseFloat(document.getElementById('result').textContent);
+            if (!isNaN(result)) {
+                memory = result;
+                showNotification('Value stored in memory');
+            }
+        }
+
+        function memoryRecall() {
+            appendValue(memory.toString());
+        }
+
+        function memoryAdd() {
+            const result = parseFloat(document.getElementById('result').textContent);
+            if (!isNaN(result)) {
+                memory += result;
+                showNotification('Value added to memory');
+            }
+        }
+
+        function memoryClear() {
+            memory = 0;
+            showNotification('Memory cleared');
+        }
+
+        function addToHistory(expression, result) {
+            history.unshift({ expression, result });
+            if (history.length > 10) history.pop();
+            updateHistoryDisplay();
+        }
+
+        function updateHistoryDisplay() {
+            const historyList = document.getElementById('historyList');
+            historyList.innerHTML = history.map(item => `
+                <div class="history-item" onclick="useHistoryItem('${item.expression}')">
+                    <div class="history-expression">${item.expression}</div>
+                    <div class="history-result">${item.result}</div>
+                </div>
+            `).join('');
+        }
+
+        function useHistoryItem(expression) {
+            document.getElementById('expression').textContent = expression;
+        }
+
+        function toggleTheme() {
+            document.body.classList.toggle('light-mode');
+            const themeIcon = document.querySelector('.theme-toggle i');
+            themeIcon.classList.toggle('fa-moon');
+            themeIcon.classList.toggle('fa-sun');
+        }
+
+        function toggleScientificMode() {
+            const calculator = document.getElementById('calculator');
+            const scientificButton = document.getElementById('toggleScientific');
+            const scientificButtons = document.querySelector('.scientific-buttons');
+            
+            // Add transition class
+            calculator.classList.add('mode-transition');
+            
+            // Wait for transition to start before toggling modes
+            setTimeout(() => {
+                // Toggle classes
+                calculator.classList.toggle('scientific-mode');
+                calculator.classList.toggle('basic-mode');
+                
+                if (calculator.classList.contains('scientific-mode')) {
+                    // Switch to scientific mode
+                    scientificButton.innerHTML = '<span class="button-text">Basic</span>';
+                    scientificButton.title = "Switch to Basic Mode";
+                    
+                    // Animate the scientific buttons in
+                    if (scientificButtons) {
+                        scientificButtons.style.display = 'grid';
+                        setTimeout(() => {
+                            scientificButtons.style.opacity = '1';
+                            scientificButtons.style.transform = 'translateY(0)';
+                        }, 10);
+                    } else {
+                        // Create scientific buttons if they don't exist
+                        createScientificButtons();
+                    }
+                    
+                    showNotification('Scientific mode enabled', 'success');
+                } else {
+                    // Switch to basic mode
+                    scientificButton.innerHTML = '<span class="button-text">Scientific</span>';
+                    scientificButton.title = "Switch to Scientific Mode";
+                    
+                    // Animate the scientific buttons out
+                    if (scientificButtons) {
+                        scientificButtons.style.opacity = '0';
+                        scientificButtons.style.transform = 'translateY(-20px)';
+                        setTimeout(() => {
+                            scientificButtons.style.display = 'none';
+                        }, 300);
+                    }
+                    
+                    showNotification('Basic mode enabled', 'success');
+                }
+                
+                // Remove transition class after mode switch is complete
+                setTimeout(() => {
+                    calculator.classList.remove('mode-transition');
+                }, 300);
+            }, 50);
+        }
+
+        function toggleHistory() {
+            const historyPanel = document.getElementById('historyPanel');
+            const historyButton = document.getElementById('toggleHistory');
+            
+            historyPanel.classList.toggle('show');
+            historyButton.classList.toggle('active');
+            
+            renderHistory();
+        }
+
+        function toggleHelp() {
+            const helpDialog = document.getElementById('helpDialog');
+            const helpButton = document.querySelector('button[onclick="toggleHelp()"]');
+            
+            helpDialog.classList.toggle('show');
+            helpButton.classList.toggle('active');
+        }
+
+        function toggleTheme() {
+            document.body.classList.toggle('light-mode');
+            const themeButton = document.querySelector('.theme-toggle');
+            
+            if (document.body.classList.contains('light-mode')) {
+                themeButton.innerHTML = '<i class="fas fa-sun"></i>';
+                themeButton.classList.toggle('active');
+                showNotification('Light mode enabled', 'success');
+            } else {
+                themeButton.innerHTML = '<i class="fas fa-moon"></i>';
+                themeButton.classList.toggle('active');
+                showNotification('Dark mode enabled', 'success');
+            }
+        }
+
+        function showNotification(message, type = 'success') {
+            const notification = document.getElementById('notification');
+            notification.textContent = message;
+            notification.className = 'notification';
+            notification.classList.add('show');
+            
+            if (type === 'error') {
+                notification.classList.add('error');
+            }
+            
+            setTimeout(() => {
+                notification.classList.remove('show');
+                setTimeout(() => {
+                    if (type === 'error') {
+                        notification.classList.remove('error');
+                    }
+                }, 300);
+            }, 3000);
+        }
+
+        // Initialize the calculator
+        document.addEventListener('DOMContentLoaded', function() {
+            // Clear the display
+            clearDisplay();
+            
+            // Initialize history panel
+            renderHistory();
+            
+            // Set up keyboard shortcuts help
+            updateShortcutsHelp();
+            
+            // Set initial mode indicator and toggle button
+            const calculator = document.getElementById('calculator');
+            const scientificButton = document.getElementById('toggleScientific');
+            
+            // Make sure calculator has proper initial class
+            if (!calculator.classList.contains('basic-mode') && !calculator.classList.contains('scientific-mode')) {
+                calculator.classList.add('basic-mode');
+            }
+            
+            // Set proper button text based on initial class
+            if (calculator.classList.contains('scientific-mode')) {
+                scientificButton.innerHTML = '<span class="button-text">Basic</span>';
+                scientificButton.title = "Switch to Basic Mode";
+            } else {
+                scientificButton.innerHTML = '<span class="button-text">Scientific</span>';
+                scientificButton.title = "Switch to Scientific Mode";
+            }
+            
+            // Show welcome notification
+            setTimeout(() => {
+                showNotification('Welcome to SofCal Calculator!');
+            }, 500);
+        });
+
+        // Keyboard support
+        document.addEventListener('keydown', function(event) {
+            const key = event.key;
+            
+            // Basic operations
+            if (/[\d\+\-\*\/\.\(\)]/.test(key)) {
+                appendValue(key);
+                event.preventDefault();
+            } else if (key === 'Enter') {
+                calculate();
+                event.preventDefault();
+            } else if (key === 'Backspace') {
+                backspace();
+                event.preventDefault();
+            } else if (key === 'Escape') {
+                clearDisplay();
+                event.preventDefault();
+            } else if (key === '%') {
+                appendValue('%');
+                event.preventDefault();
+            } else if (key === '^') {
+                appendValue('^');
+                event.preventDefault();
+            }
+            
+            // Scientific functions with keyboard shortcuts
+            else if (key === 's' && event.ctrlKey) {
+                appendValue('sin(');
+                event.preventDefault();
+            } else if (key === 'c' && event.ctrlKey) {
+                appendValue('cos(');
+                event.preventDefault();
+            } else if (key === 't' && event.ctrlKey) {
+                appendValue('tan(');
+                event.preventDefault();
+            } else if (key === 'l' && event.ctrlKey) {
+                appendValue('log(');
+                event.preventDefault();
+            } else if (key === 'n' && event.ctrlKey) {
+                appendValue('ln(');
+                event.preventDefault();
+            } else if (key === 'r' && event.ctrlKey) {
+                appendValue('sqrt(');
+                event.preventDefault();
+            } else if (key === 'p' && event.ctrlKey) {
+                appendValue('π');
+                event.preventDefault();
+            } else if (key === 'e' && event.ctrlKey) {
+                appendValue('e');
+                event.preventDefault();
+            } else if (key === 'f' && event.ctrlKey) {
+                toggleScientificMode();
+                event.preventDefault();
+            } else if (key === 'h' && event.ctrlKey) {
+                toggleHistory();
+                event.preventDefault();
+            } else if (key === 'd' && event.ctrlKey) {
+                toggleTheme();
+                event.preventDefault();
+            } else if (key === '?') {
+                toggleHelp();
+                event.preventDefault();
+            }
+        });
+    </script>
+</body>
+</html>

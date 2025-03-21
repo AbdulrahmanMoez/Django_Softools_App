@@ -1,0 +1,142 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Home - SofTools</title>
+    <meta name="description" content="Empowering developers with cutting-edge tools and solutions.">
+    <link rel="icon" type="image/png" href="{% static 'softools/images/favicon.png' %}">
+    <link rel="stylesheet" href="{% static 'softools/css/home.css' %}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body>
+    <!-- Header -->
+    <header class="site-header">
+        <div class="header-container">
+            <a href="{% url 'home' %}" class="brand" aria-label="SofTools Home">
+                <img src="{% static 'softools/images/logo.png' %}" alt="SofTools Logo" class="brand-logo" loading="lazy">
+                <span class="brand-name">SofTools</span>
+            </a>
+            
+            {% if user.is_authenticated %}
+            <div class="profile-section">
+                <input type="checkbox" id="profile-toggle" class="profile-toggle" aria-hidden="true">
+                <label for="profile-toggle" class="profile-trigger" aria-expanded="false" aria-controls="profile-dropdown">
+                    {% if user.pic%}
+                        <img src="{{ user.pic.url }}" alt="Profile Picture" class="profile-image" loading="lazy" >
+                    {% else %}
+                        <div class="profile-initial">{{ user.first_name|make_list|first|upper }}</div>
+                    {% endif %}
+                    <span class="profile-name">{{ user.first_name.capitalize }}</span>
+                    <i class="fas fa-chevron-down"></i>
+                </label>
+                <div id="profile-dropdown" class="profile-dropdown">
+                    <a href="{% url 'profile' %}" class="dropdown-item" aria-label="View Profile">
+                        <i class="fas fa-user"></i>
+                        <span>Profile</span>
+                    </a>
+                    <a href="{% url 'settings' %}" class="dropdown-item" aria-label="Settings">
+                        <i class="fas fa-cog"></i>
+                        <span>Settings</span>
+                    </a>
+                    <div class="dropdown-divider"></div>
+                    <a href="{% url 'logout' %}" class="dropdown-item" aria-label="Sign Out">
+                        <i class="fas fa-sign-out-alt"></i>
+                        <span>Sign Out</span>
+                    </a>
+                </div>
+            </div>
+            {% endif %}
+        </div>
+    </header>
+
+    <!-- Hero Section -->
+    {% if not user.is_authenticated %}
+    <section class="hero-section">
+        <div class="hero-content">
+            <h1 class="hero-title">
+                Welcome to <span class="highlight">SofTools</span>
+                <span class="typing-effect">Empowering Developers.</span>
+            </h1>
+            <p class="hero-subtitle">Cutting-edge tools and solutions for modern development.</p>
+            <div class="cta-buttons">
+                <a href="{% url 'login' %}" class="cta-button primary" aria-label="Sign In">
+                    <i class="fas fa-sign-in-alt"></i>
+                    <span>Sign In</span>
+                </a>
+                <a href="{% url 'register' %}" class="cta-button secondary" aria-label="Create Account">
+                    <i class="fas fa-user-plus"></i>
+                    <span>Create Account</span>
+                </a>
+            </div>
+        </div>
+    </section>
+    {% endif %}
+
+    <!-- Services Section -->
+    <main>
+        <section class="services-section">
+            <div class="section-header">
+                <h2>Our Services</h2>
+                <p>Discover our powerful development tools and utilities</p>
+            </div>
+            
+            <div class="services-grid">
+                {% for service in services %}
+                <div class="service-card">
+                    <div class="service-image">
+                        <img src="{{ service.image.url }}" alt="{{ service.name }}" loading="lazy">
+                    </div>
+                    <div class="service-content">
+                        <div class="service-header">
+                            <h3 class="service-title">{{ service.name }}</h3>
+                            {% if user.is_authenticated %}
+                                {% if service.available %}
+                                    <span class="status-badge available" title="This service is available now">Available</span>
+                                {% else %}
+                                    <span class="status-badge coming-soon" title="This service will be available soon">Coming Soon</span>
+                                {% endif %}
+                            {% endif %}
+                        </div>
+                        <p class="service-description">{{ service.description }}</p> 
+                        <div class="service-actions">
+                            {% if user.is_authenticated and service.available %}
+                                <a href="{{ service.url }}" class="action-button primary" aria-label="Launch {{ service.name }}">
+                                    <i class="fas fa-rocket"></i>
+                                    <span>Launch App</span>
+                                </a>
+                            {% endif %}
+                            {% if service.github_url %}
+                            <a href="{{ service.github_url }}" class="action-button secondary" aria-label="View Source Code for {{ service.name }}" target="_blank">
+                                <i class="fab fa-github"></i>
+                                <span>View Source</span>
+                            </a>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        </section>
+    </main>
+
+    <!-- Footer -->
+    <footer class="page-footer">
+        <div class="footer-actions">
+            <a href="{% url 'about' %}" class="footer-link" aria-label="About Us">
+                <i class="fas fa-info-circle"></i>
+                <span>About Us</span>
+            </a>
+            <a href="{% url 'contact' %}" class="footer-link" aria-label="Contact Us">
+                <i class="fas fa-envelope"></i>
+                <span>Contact</span>
+            </a>
+            <a href="{% url 'terms' %}" class="footer-link" aria-label="Terms and Privacy" target="_blank">
+                <i class="fas fa-shield-alt"></i>
+                <span>Terms & Privacy</span>
+            </a>
+        </div>
+    </footer>
+</body>
+</html>

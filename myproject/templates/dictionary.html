@@ -1,0 +1,585 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SofTools Dictionary | Find Word Definitions</title>
+    <meta name="description" content="Free online dictionary tool by SofTools. Look up word definitions, synonyms, and more.">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary-color: #4f46e5;
+            --primary-hover: #4338ca;
+            --secondary-color: #8b5cf6;
+            --text-primary: #1e293b;
+            --text-secondary: #64748b;
+            --text-light: #94a3b8;
+            --bg-primary: #f8fafc;
+            --bg-secondary: #f1f5f9;
+            --bg-card: #ffffff;
+            --border-color: #e2e8f0;
+            --shadow-sm: 0 1px 3px rgba(0,0,0,0.1);
+            --shadow-md: 0 4px 6px -1px rgba(0,0,0,0.1), 0 2px 4px -1px rgba(0,0,0,0.06);
+            --shadow-lg: 0 10px 15px -3px rgba(0,0,0,0.1), 0 4px 6px -2px rgba(0,0,0,0.05);
+            --radius-sm: 0.375rem;
+            --radius-md: 0.5rem;
+            --radius-lg: 0.75rem;
+            --transition: all 0.3s ease;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            line-height: 1.6;
+            color: var(--text-primary);
+            background-color: var(--bg-primary);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .header {
+            background-color: var(--bg-card);
+            box-shadow: var(--shadow-sm);
+            padding: 1rem 0;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .header-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 1.5rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            text-decoration: none;
+            color: var(--text-primary);
+        }
+
+        .logo i {
+            font-size: 1.75rem;
+            color: var(--primary-color);
+            margin-right: 0.75rem;
+        }
+
+        .logo-text {
+            font-weight: 700;
+            font-size: 1.25rem;
+        }
+
+        .logo-text span {
+            color: var(--primary-color);
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 1.5rem;
+        }
+
+        .nav-link {
+            color: var(--text-secondary);
+            text-decoration: none;
+            font-weight: 500;
+            transition: var(--transition);
+            display: flex;
+            align-items: center;
+        }
+
+        .nav-link i {
+            margin-right: 0.5rem;
+        }
+
+        .nav-link:hover {
+            color: var(--primary-color);
+        }
+
+        .container {
+            max-width: 900px;
+            width: 100%;
+            margin: 2rem auto;
+            padding: 0 1.5rem;
+            flex: 1;
+        }
+
+        .page-title {
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+
+        .page-title h1 {
+            font-size: 2.25rem;
+            color: var(--text-primary);
+            margin-bottom: 0.5rem;
+        }
+
+        .page-title p {
+            color: var(--text-secondary);
+            font-size: 1.1rem;
+        }
+
+        .search-form {
+            background: var(--bg-card);
+            padding: 2rem;
+            border-radius: var(--radius-lg);
+            box-shadow: var(--shadow-md);
+            margin-bottom: 2rem;
+            transition: var(--transition);
+        }
+
+        .search-form:hover {
+            box-shadow: var(--shadow-lg);
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .form-group:last-child {
+            margin-bottom: 0;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 0.75rem;
+            font-weight: 500;
+            color: var(--text-primary);
+        }
+
+        .input-wrapper {
+            position: relative;
+        }
+
+        .input-wrapper i {
+            position: absolute;
+            left: 1rem;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--text-light);
+        }
+
+        .form-group input[type="text"] {
+            width: 100%;
+            padding: 0.875rem 1rem 0.875rem 2.75rem;
+            border: 2px solid var(--border-color);
+            border-radius: var(--radius-md);
+            font-size: 1rem;
+            transition: var(--transition);
+            color: var(--text-primary);
+        }
+
+        .form-group input[type="text"]:focus {
+            outline: none;
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.2);
+        }
+
+        .form-group input[type="text"]::placeholder {
+            color: var(--text-light);
+        }
+
+        .btn-search {
+            width: 100%;
+            padding: 0.875rem 1.5rem;
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            border-radius: var(--radius-md);
+            cursor: pointer;
+            font-size: 1rem;
+            font-weight: 600;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            transition: var(--transition);
+        }
+
+        .btn-search i {
+            margin-right: 0.5rem;
+        }
+
+        .btn-search:hover {
+            background-color: var(--primary-hover);
+            transform: translateY(-1px);
+        }
+
+        .btn-search:active {
+            transform: translateY(0);
+        }
+
+        .results-container {
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
+        }
+
+        .word-result {
+            background: var(--bg-card);
+            padding: 1.75rem;
+            border-radius: var(--radius-lg);
+            box-shadow: var(--shadow-md);
+            transition: var(--transition);
+            border-left: 4px solid var(--primary-color);
+        }
+
+        .word-result:hover {
+            box-shadow: var(--shadow-lg);
+        }
+
+        .word-header {
+            display: flex;
+            align-items: flex-start;
+            justify-content: space-between;
+            margin-bottom: 1.25rem;
+            padding-bottom: 0.75rem;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .word-title {
+            display: flex;
+            align-items: center;
+        }
+
+        .word-title h2 {
+            font-size: 1.75rem;
+            color: var(--text-primary);
+            margin-right: 0.75rem;
+        }
+
+        .word-phonetic {
+            color: var(--text-light);
+            font-style: italic;
+            font-size: 1rem;
+        }
+
+        .word-type {
+            display: inline-block;
+            padding: 0.25rem 0.75rem;
+            background-color: rgba(79, 70, 229, 0.1);
+            color: var(--primary-color);
+            font-size: 0.875rem;
+            font-weight: 500;
+            border-radius: 9999px;
+        }
+
+        .word-description {
+            color: var(--text-secondary);
+            line-height: 1.75;
+        }
+
+        .word-description p {
+            margin-bottom: 1rem;
+        }
+
+        .word-description p:last-child {
+            margin-bottom: 0;
+        }
+
+        .word-meta {
+            margin-top: 1.5rem;
+            display: flex;
+            gap: 1rem;
+            flex-wrap: wrap;
+        }
+
+        .word-meta-item {
+            display: flex;
+            align-items: center;
+            color: var(--text-light);
+            font-size: 0.875rem;
+        }
+
+        .word-meta-item i {
+            margin-right: 0.4rem;
+            color: var(--secondary-color);
+        }
+
+        .suggestion-container {
+            background-color: var(--bg-secondary);
+            border-radius: var(--radius-md);
+            padding: 1.25rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .suggestion-text {
+            color: var(--text-secondary);
+            font-weight: 500;
+            margin-bottom: 0.75rem;
+            display: flex;
+            align-items: center;
+        }
+
+        .suggestion-text i {
+            color: var(--secondary-color);
+            margin-right: 0.5rem;
+        }
+
+        .suggestion-list {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+        }
+
+        .suggestion-item {
+            background-color: var(--bg-card);
+            color: var(--primary-color);
+            padding: 0.5rem 1rem;
+            border-radius: var(--radius-sm);
+            font-size: 0.875rem;
+            cursor: pointer;
+            transition: var(--transition);
+            border: 1px solid var(--border-color);
+            text-decoration: none;
+        }
+
+        .suggestion-item:hover {
+            background-color: rgba(79, 70, 229, 0.1);
+            border-color: var(--primary-color);
+        }
+
+        .error-message {
+            background-color: #fee2e2;
+            border-left: 4px solid #dc2626;
+            padding: 1.25rem;
+            margin-bottom: 1.5rem;
+            border-radius: var(--radius-md);
+            color: #b91c1c;
+            display: flex;
+            align-items: flex-start;
+        }
+
+        .error-message i {
+            margin-right: 0.75rem;
+            font-size: 1.25rem;
+            margin-top: 0.125rem;
+        }
+
+        .no-results {
+            text-align: center;
+            padding: 3rem 2rem;
+            background-color: var(--bg-card);
+            border-radius: var(--radius-lg);
+            box-shadow: var(--shadow-md);
+        }
+
+        .no-results i {
+            font-size: 3rem;
+            color: var(--text-light);
+            margin-bottom: 1rem;
+        }
+
+        .no-results h3 {
+            color: var(--text-primary);
+            margin-bottom: 0.75rem;
+        }
+
+        .no-results p {
+            color: var(--text-secondary);
+        }
+
+        .footer {
+            background-color: var(--bg-card);
+            padding: 1.5rem 0;
+            margin-top: 3rem;
+            border-top: 1px solid var(--border-color);
+        }
+
+        .footer-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 1.5rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+
+        .footer-text {
+            color: var(--text-secondary);
+            font-size: 0.875rem;
+        }
+
+        .footer-links {
+            display: flex;
+            gap: 1.5rem;
+        }
+
+        .footer-link {
+            color: var(--text-secondary);
+            text-decoration: none;
+            font-size: 0.875rem;
+            transition: var(--transition);
+        }
+
+        .footer-link:hover {
+            color: var(--primary-color);
+        }
+
+        @media (max-width: 768px) {
+            .header-container {
+                flex-direction: column;
+                gap: 1rem;
+            }
+
+            .page-title h1 {
+                font-size: 1.75rem;
+            }
+
+            .page-title p {
+                font-size: 1rem;
+            }
+
+            .word-header {
+                flex-direction: column;
+                gap: 0.75rem;
+            }
+
+            .footer-container {
+                flex-direction: column;
+                text-align: center;
+                gap: 1rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header class="header">
+        <div class="header-container">
+            <a href="#" class="logo">
+                <i class="fas fa-book-open"></i>
+                <div class="logo-text">Sof<span>Dictionary</span></div>
+            </a>
+            <nav class="nav-links">
+                <a href="{% url 'home' %}" class="nav-link"><i class="fas fa-home"></i> Home</a>
+                <a href="#" class="nav-link"><i class="fas fa-bookmark"></i> Saved Words</a>
+                <a href="{% url 'about' %}" class="nav-link"><i class="fas fa-info-circle"></i> About</a>
+            </nav>
+        </div>
+    </header>
+
+    <div class="container">
+        <div class="page-title">
+            <h1>Find Word Definitions</h1>
+            <p>Explore meanings, pronunciations, and examples for any word</p>
+        </div>
+
+        <div class="search-form">
+            <form method="post">
+                {% csrf_token %}
+                <div class="form-group">
+                    <label for="query">Search for a word:</label>
+                    <div class="input-wrapper">
+                        <i class="fas fa-search"></i>
+                        <input type="text" id="query" name="query" required 
+                               placeholder="Enter a word to search">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <button type="submit" class="btn-search">
+                        <i class="fas fa-search"></i> Search Dictionary
+                    </button>
+                </div>
+            </form>
+        </div>
+
+        {% if error %}
+            <div class="error-message">
+                <i class="fas fa-exclamation-circle"></i>
+                <div>{{ error }}</div>
+            </div>
+        {% endif %}
+
+        {% if suggestion %}
+            <div class="suggestion-container">
+                <div class="suggestion-text">
+                    <i class="fas fa-lightbulb"></i> Did you mean:
+                </div>
+                <div class="suggestion-list">
+                    {% for word in suggestion %}
+                        <a href="?query={{ word }}" class="suggestion-item">{{ word }}</a>
+                    {% endfor %}
+                </div>
+            </div>
+        {% endif %}
+
+        {% if partial_match %}
+            <div class="suggestion-container">
+                <div class="suggestion-text">
+                    <i class="fas fa-search"></i> Related results:
+                </div>
+                <div class="suggestion-list">
+                    {% for word in partial_match %}
+                        <a href="?query={{ word }}" class="suggestion-item">{{ word }}</a>
+                    {% endfor %}
+                </div>
+            </div>
+        {% endif %}
+
+        <div class="results-container">
+            {% if word %}
+                {% for item in word %}
+                <div class="word-result">
+                    <div class="word-header">
+                        <div class="word-title">
+                            <h2>{{ item.word }}</h2>
+                            {% if item.phonetic %}
+                                <span class="word-phonetic">{{ item.phonetic }}</span>
+                            {% endif %}
+                        </div>
+                        {% if item.type %}
+                            <div class="word-type">{{ item.type }}</div>
+                        {% endif %}
+                    </div>
+                    <div class="word-description">
+                        {{ item.description|safe }}
+                    </div>
+                    <div class="word-meta">
+                        <div class="word-meta-item">
+                            <i class="fas fa-volume-up"></i> Pronunciation
+                        </div>
+                        <div class="word-meta-item">
+                            <i class="fas fa-book"></i> Etymology
+                        </div>
+                        <div class="word-meta-item">
+                            <i class="fas fa-share-alt"></i> Share
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+            {% elif request.method == 'POST' %}
+                <div class="no-results">
+                    <i class="fas fa-search"></i>
+                    <h3>No results found</h3>
+                    <p>Try searching for a different word or check your spelling</p>
+                </div>
+            {% endif %}
+        </div>
+    </div>
+
+    <footer class="footer">
+        <div class="footer-container">
+            <div class="footer-text">
+                &copy; 2025 SofDictionary. All rights reserved.
+            </div>
+            <div class="footer-links">
+                <a href="#" class="footer-link">Privacy Policy</a>
+                <a href="#" class="footer-link">Terms of Service</a>
+                <a href="#" class="footer-link">Contact Us</a>
+            </div>
+        </div>
+    </footer>
+</body>
+</html>
