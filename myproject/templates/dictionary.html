@@ -521,7 +521,7 @@
                     <i class="fas fa-search"></i> Related results:
                 </div>
                 <div class="suggestion-list">
-                    {% for word in partial_match %}
+                    {% for word in partial_matches %}
                         <a href="?query={{ word }}" class="suggestion-item">{{ word }}</a>
                     {% endfor %}
                 </div>
