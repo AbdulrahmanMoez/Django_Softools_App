@@ -18,40 +18,7 @@
                     <span class="brand-name">SofTools</span>
                 </a>
                 
-                {% if user.is_authenticated %}
-                <div class="profile-section">
-                    <div class="profile-menu">
-                        <button class="profile-trigger">
-                            {% if user.pic %}
-                                <img src="{{ user.pic.url }}" alt="Profile" class="profile-image">
-                            {% else %}
-                                <div class="profile-initial">{{ user.first_name|make_list|first|upper }}</div>
-                            {% endif %}
-                            <span class="profile-name">{{ user.first_name }}</span>
-                            <i class="fas fa-chevron-down profile-arrow"></i>
-                        </button>
-                        <div class="profile-dropdown">
-                            <a href="{% url 'home' %}" class="dropdown-item">
-                                <i class="fas fa-home icon-large"></i> Home
-                            </a>
-                            <a href="{% url 'profile' %}" class="dropdown-item active">
-                                <i class="fas fa-user-circle icon-large"></i> Profile
-                            </a>
-                            <a href="{% url 'settings' %}" class="dropdown-item">
-                                <i class="fas fa-cog icon-large"></i> Settings
-                            </a>
-                            <div class="dropdown-divider"></div>
-                            <a href="{% url 'terms' %}" class="dropdown-item">
-                                <i class="fas fa-shield-alt icon-large"></i> Terms & Privacy
-                            </a>
-                            <div class="dropdown-divider"></div>
-                            <a href="{% url 'logout' %}" class="dropdown-item">
-                                <i class="fas fa-sign-out-alt icon-large"></i> Sign Out
-                            </a>
-                        </div>
-                    </div>
-                </div>
-                {% endif %}
+                {% include 'partials/dropdown_menu.html' %}
             </div>
         </header>
 
@@ -155,6 +122,7 @@
             </div>
         </div>
 
+        <script src="{% static 'softools/js/dropdown.js' %}"></script>
         <script>
             document.addEventListener('DOMContentLoaded', function() {
                 const profilePicInput = document.getElementById('profile-picture-input');
@@ -213,34 +181,6 @@
                         modal.style.display = 'none';
                     }
                 });
-
-                const profileTrigger = document.querySelector('.profile-trigger');
-                const profileDropdown = document.querySelector('.profile-dropdown');
-                
-                if (profileTrigger && profileDropdown) {
-                    // Toggle dropdown on trigger click
-                    profileTrigger.addEventListener('click', function(e) {
-                        e.stopPropagation();
-                        this.classList.toggle('active');
-                        profileDropdown.classList.toggle('active');
-                    });
-
-                    // Close dropdown when clicking outside
-                    document.addEventListener('click', function(e) {
-                        if (!profileDropdown.contains(e.target) && !profileTrigger.contains(e.target)) {
-                            profileTrigger.classList.remove('active');
-                            profileDropdown.classList.remove('active');
-                        }
-                    });
-
-                    // Close dropdown on escape key
-                    document.addEventListener('keydown', function(e) {
-                        if (e.key === 'Escape') {
-                            profileTrigger.classList.remove('active');
-                            profileDropdown.classList.remove('active');
-                        }
-                    });
-                }
             });
         </script>
     </body>

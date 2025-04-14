@@ -508,7 +508,7 @@
                     <i class="fas fa-lightbulb"></i> Did you mean:
                 </div>
                 <div class="suggestion-list">
-                    {% for word in suggestion %}
+                    {% for word in similar_matches %}
                         <a href="?query={{ word }}" class="suggestion-item">{{ word }}</a>
                     {% endfor %}
                 </div>
