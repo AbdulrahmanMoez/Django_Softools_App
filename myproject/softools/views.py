@@ -52,26 +52,6 @@ class HomeView(TemplateView):
         context['services'] = Service.objects.all()
         return context
 
-class CalculatorView(LoginRequiredMixin, TemplateView):
-    """Handle calculator functionality."""
-    template_name = 'calculator.html'
-    login_url = 'login'
-
-    def post(self, request: HttpRequest, *args: Any, **kwargs: Any) -> HttpResponse:
-        try:
-            user_input = request.POST.get('expression', '')
-            user_input = user_input.replace('π', 'pi').replace('÷', '/')
-            calculated_result = float(sympify(user_input).evalf())
-            
-            if calculated_result.is_integer():
-                result = int(calculated_result)
-            else:
-                result = '{:.6f}'.format(calculated_result).rstrip('0').rstrip('.')
-                
-        except Exception:
-            result = "Error: Invalid input"
-
-        return self.render_to_response({'result': result})
 
 class DictionaryView(TemplateView):
     """Handle dictionary search functionality."""
