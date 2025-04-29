@@ -145,7 +145,9 @@ def logout(request: HttpRequest) -> HttpResponse:
 
 def services(request: HttpRequest) -> HttpResponse:
     services = Service.objects.all()
-    return render(request, 'services.html', {'services': services})
+    for is_available in services.available:
+        if is_available == True:
+            return render(request, 'services.html', {'services': is_available})
 
 @login_required
 def profile(request: HttpRequest) -> HttpResponse:
